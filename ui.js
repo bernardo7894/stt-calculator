@@ -1,6 +1,262 @@
-// Renders the STT 2026 IRS Union Dues Calculator UI into #root
+// Clean, progressive-disclosure UI skeleton for the STT 2026 IRS Calculator
 (function () {
   "use strict";
   const root = document.getElementById("root");
-  if (root) root.innerHTML = "<div class=\"topbar\"></div>\n\n  <header>\n    <div class=\"wrap header-inner\">\n      <div class=\"brand\">\n        <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 185 52\" height=\"44\" role=\"img\" aria-label=\"STT\"><g fill=\"#1D3E8F\"><ellipse cx=\"36\" cy=\"9\" rx=\"28\" ry=\"1.9\" opacity=\".55\"/><ellipse cx=\"34\" cy=\"15\" rx=\"30\" ry=\"2.1\" opacity=\".75\"/><ellipse cx=\"32\" cy=\"21\" rx=\"31\" ry=\"2.2\" opacity=\".9\"/><ellipse cx=\"30\" cy=\"27\" rx=\"31\" ry=\"2.2\"/><ellipse cx=\"28\" cy=\"33\" rx=\"30\" ry=\"2.1\" opacity=\".9\"/><ellipse cx=\"26\" cy=\"39\" rx=\"28\" ry=\"1.9\" opacity=\".75\"/><ellipse cx=\"24\" cy=\"45\" rx=\"25\" ry=\"1.8\" opacity=\".55\"/><circle cx=\"44\" cy=\"26\" r=\"13.5\" stroke=\"#fff\" stroke-width=\"2\"/><path d=\"M31,26Q44,16 57,26Q44,36 31,26Z\" fill=\"#fff\"/><circle cx=\"44\" cy=\"26\" r=\"5.2\" fill=\"#13295E\"/></g><text x=\"72\" y=\"36\" font-family=\"system-ui,sans-serif\" font-weight=\"900\" font-size=\"33\" fill=\"#CC2925\">STT</text><text x=\"73\" y=\"47\" font-family=\"system-ui,sans-serif\" font-weight=\"700\" font-size=\"7.2\" fill=\"#181D27\">TELECOMUNICA\u00c7\u00d5ES E AUDIOVISUAL</text></svg>\n        <div class=\"brand-text\">\n          <h1>STT Union Dues &amp; 2026 IRS Calculator</h1>\n          <p>Telecommunications &amp; Audiovisual Workers' Union &middot; <span class=\"zh\">\u8461\u8404\u7259\u7535\u4fe1\u4e0e\u89c6\u542c\u901a\u4fe1\u5de5\u4f1a</span></p>\n        </div>\n      </div>\n      <nav aria-label=\"Primary navigation\">\n        <a href=\"#calculator\">Calculator</a>\n        <a href=\"#how-it-works\">Why It's Less Than 1%</a>\n        <a href=\"#faq\">English FAQ</a>\n        <a href=\"#join\" class=\"primary\">How to Join</a>\n      </nav>\n    </div>\n  </header>\n\n  <div class=\"privacy-bar\">\n    <div class=\"wrap privacy-items\">\n      <div class=\"privacy-badges\">\n        <span>&#128274; <strong>100% local in your browser</strong></span>\n        <span>&#128683; Zero tracking, cookies, or personal data</span>\n        <span>&#128197; 2026 Portuguese IRS rules (DL 212/2026)</span>\n      </div>\n      <div>\n        <a href=\"https://github.com/bernardo7894/stt-calculator\" target=\"_blank\" rel=\"noopener\">Open Source on GitHub &#8599;</a>\n      </div>\n    </div>\n  </div>\n\n  <main class=\"wrap\">\n    <!-- CALCULATOR -->\n    <section id=\"calculator\" class=\"calc-grid\">\n      <!-- Left: Inputs -->\n      <div class=\"card\">\n        <h2>Your Situation (2026 Tax Year)</h2>\n        <p class=\"card-sub\">Nothing leaves your browser. Try a fictitious salary or your own figures.</p>\n\n        <div class=\"field\">\n          <div style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;\">\n            <label for=\"salaryInput\" style=\"margin-bottom:0;\">Gross Base Salary (Category A)</label>\n            <div class=\"seg\" role=\"group\" aria-label=\"Salary period\">\n              <button type=\"button\" id=\"btnAnnual\" class=\"active\">Annual (\u20ac/yr)</button>\n              <button type=\"button\" id=\"btnMonthly14\">Monthly &times; 14</button>\n            </div>\n          </div>\n          <div class=\"input-prefix\">\n            <span>\u20ac</span>\n            <input type=\"number\" id=\"salaryInput\" min=\"0\" max=\"500000\" step=\"500\" value=\"40000\" />\n          </div>\n          <div class=\"hint\" id=\"salaryHint\">Equivalent to \u20ac2,857/mo across 14 payments (Portugal standard).</div>\n          <div class=\"presets\" aria-label=\"Example salaries\">\n            <button type=\"button\" data-annual=\"20000\">\u20ac20k</button>\n            <button type=\"button\" data-annual=\"30000\">\u20ac30k</button>\n            <button type=\"button\" data-annual=\"40000\">\u20ac40k</button>\n            <button type=\"button\" data-annual=\"55000\">\u20ac55k</button>\n            <button type=\"button\" data-annual=\"70000\">\u20ac70k</button>\n            <button type=\"button\" data-annual=\"90000\">\u20ac90k</button>\n          </div>\n        </div>\n\n        <div class=\"field-row\">\n          <div class=\"field\">\n            <label for=\"regionSelect\">Tax Region</label>\n            <select id=\"regionSelect\">\n              <option value=\"continente\" selected>Continente (Mainland)</option>\n              <option value=\"madeira\">Madeira (RAM, &minus;30% rates)</option>\n              <option value=\"acores\">A\u00e7ores (RAA, &minus;30% rates)</option>\n            </select>\n          </div>\n          <div class=\"field\">\n            <label for=\"filingSelect\">Household Filing</label>\n            <select id=\"filingSelect\">\n              <option value=\"single\" selected>Single (Individual)</option>\n              <option value=\"single_parent\">Single-Parent (Monoparental)</option>\n              <option value=\"joint\">Married / Uni\u00e3o de Facto (Joint)</option>\n            </select>\n          </div>\n        </div>\n\n        <div id=\"spouseBox\" class=\"subbox hidden\">\n          <div class=\"subbox-title\">Joint Taxation (Quociente Familiar = 2)</div>\n          <div class=\"field\" style=\"margin-bottom:6px;\">\n            <label for=\"spouseSalary\">Spouse Annual Gross Salary (\u20ac/yr)</label>\n            <div class=\"input-prefix\">\n              <span>\u20ac</span>\n              <input type=\"number\" id=\"spouseSalary\" min=\"0\" max=\"500000\" step=\"500\" value=\"30000\" />\n            </div>\n          </div>\n          <label class=\"check-inline\">\n            <input type=\"checkbox\" id=\"spouseUnion\" />\n            Spouse also pays 1% union dues\n          </label>\n        </div>\n\n        <div class=\"field-row\">\n          <div class=\"field\">\n            <label for=\"regimeSelect\">IRS Tax Regime</label>\n            <select id=\"regimeSelect\">\n              <option value=\"standard\" selected>Standard IRS 2026</option>\n              <option value=\"irs_jovem\">IRS Jovem (Art. 12.\u00ba-B, &le; 35 yrs)</option>\n              <option value=\"nhr\">NHR / IFICI (Flat 20%)</option>\n            </select>\n          </div>\n          <div class=\"field\" id=\"jovemField\">\n            <label for=\"jovemBand\">IRS Jovem Year (Exemption)</label>\n            <select id=\"jovemBand\" disabled>\n              <option value=\"y1\">Year 1 &mdash; 100% exempt (up to \u20ac29,542)</option>\n              <option value=\"y2_4\" selected>Years 2&ndash;4 &mdash; 75% exempt</option>\n              <option value=\"y5_7\">Years 5&ndash;7 &mdash; 50% exempt</option>\n              <option value=\"y8_10\">Years 8&ndash;10 &mdash; 25% exempt</option>\n            </select>\n          </div>\n        </div>\n\n        <div class=\"subbox\">\n          <div class=\"subbox-title\">Dependents &amp; Extra Tax Credits (Optional)</div>\n          <div class=\"field-row\">\n            <div class=\"field\" style=\"margin-bottom:8px;\">\n              <label for=\"depTotal\">Total Dependents (Children)</label>\n              <input type=\"number\" id=\"depTotal\" min=\"0\" max=\"10\" step=\"1\" value=\"0\" />\n            </div>\n            <div class=\"field\" style=\"margin-bottom:8px;\">\n              <label for=\"extraCredits\">Extra Tax Credits (\u20ac/yr)</label>\n              <div class=\"input-prefix\">\n                <span>\u20ac</span>\n                <input type=\"number\" id=\"extraCredits\" min=\"0\" max=\"10000\" step=\"50\" value=\"0\" />\n              </div>\n              <div class=\"hint\">Health, education, rent, e-fatura (beyond standard \u20ac250/\u20ac335/\u20ac500).</div>\n            </div>\n          </div>\n          <div id=\"depAgeRow\" class=\"field-row hidden\">\n            <div class=\"field\" style=\"margin-bottom:0;\">\n              <label for=\"depLe3\">Of which aged &le; 3 (\u20ac726)</label>\n              <input type=\"number\" id=\"depLe3\" min=\"0\" max=\"10\" step=\"1\" value=\"0\" />\n            </div>\n            <div class=\"field\" style=\"margin-bottom:0;\">\n              <label for=\"dep2ndLe6\">2nd+ child aged &le; 6 (\u20ac900)</label>\n              <input type=\"number\" id=\"dep2ndLe6\" min=\"0\" max=\"10\" step=\"1\" value=\"0\" />\n            </div>\n          </div>\n        </div>\n\n        <div class=\"field\" style=\"margin-bottom:0;\">\n          <label for=\"feeRateInput\">Union Fee Rate (% of gross &mdash; STT is 1.0%)</label>\n          <input type=\"number\" id=\"feeRateInput\" min=\"0.1\" max=\"5.0\" step=\"0.1\" value=\"1.0\" />\n          <div class=\"hint\">CIRS Art. 25.\u00ba n.\u00ba 1 c) caps the 200% tax-deductible base at 1% of gross Category A income.</div>\n        </div>\n      </div>\n\n      <!-- Right: Live Results -->\n      <div class=\"card\">\n        <h2>Estimated Effective Cost</h2>\n        <p class=\"card-sub\">Calculated by running full 2026 AT IRS liquidation with and without union dues.</p>\n\n        <div class=\"kpi-hero\">\n          <div class=\"kpi accent\">\n            <div class=\"kpi-label\">Effective Net Rate</div>\n            <div class=\"kpi-val\" id=\"outEffRate\">0.31%</div>\n            <div class=\"kpi-note\" id=\"outEffSub\">of gross salary (vs. 1.00% nominal)</div>\n          </div>\n          <div class=\"kpi\">\n            <div class=\"kpi-label\">Net Monthly Cost</div>\n            <div class=\"kpi-val\" id=\"outNetMo12\">\u20ac10.27</div>\n            <div class=\"kpi-note\" id=\"outNetMo14\">per month (/12) &middot; \u20ac8.80 (/14)</div>\n          </div>\n          <div class=\"kpi savings\">\n            <div class=\"kpi-label\">Annual IRS Tax Rebate</div>\n            <div class=\"kpi-val\" id=\"outSavings\">\u20ac276.80</div>\n            <div class=\"kpi-note\" id=\"outSavingsPct\">69.2% of nominal dues refunded via IRS</div>\n          </div>\n          <div class=\"kpi\">\n            <div class=\"kpi-label\">Net Annual Cost</div>\n            <div class=\"kpi-val\" id=\"outNetAnnual\">\u20ac123.20</div>\n            <div class=\"kpi-note\" id=\"outNominalNote\">Nominal dues: \u20ac400.00 / yr</div>\n          </div>\n        </div>\n\n        <div class=\"bar-wrap\">\n          <div class=\"bar-header\">\n            <span>Where your 1% nominal dues go</span>\n            <span id=\"barTotalLabel\">\u20ac400.00 / yr</span>\n          </div>\n          <div class=\"bar-track\" aria-hidden=\"true\">\n            <div class=\"bar-net\" id=\"barNet\" style=\"width:31%;\"></div>\n            <div class=\"bar-tax\" id=\"barTax\" style=\"width:69%;\"></div>\n          </div>\n          <div class=\"bar-legend\">\n            <span><span class=\"dot\" style=\"background:var(--red);\"></span>Your real net cost: <strong id=\"legNet\">\u20ac123.20</strong></span>\n            <span><span class=\"dot\" style=\"background:var(--green);\"></span>Offset by 200% IRS deduction: <strong id=\"legTax\">\u20ac276.80</strong></span>\n          </div>\n        </div>\n\n        <div id=\"insightBox\" class=\"insight\"></div>\n\n        <div class=\"chart-box\">\n          <p class=\"chart-title\">Effective Net Cost (% of Gross) Across Salaries</p>\n          <p class=\"chart-sub\">Computed live for your selected region, household, dependents, and tax regime.</p>\n          <svg id=\"rateChart\" viewBox=\"0 0 540 175\" role=\"img\" aria-label=\"Effective union dues rate by annual gross salary\"></svg>\n        </div>\n\n        <details class=\"math-details\">\n          <summary>Show Exact 2026 IRS Liquidation Breakdown (Without vs. With STT)</summary>\n          <table class=\"math-table\">\n            <thead>\n              <tr>\n                <th>Line Item (Annual)</th>\n                <th>Without STT</th>\n                <th>With STT</th>\n              </tr>\n            </thead>\n            <tbody id=\"mathBody\"></tbody>\n          </table>\n        </details>\n      </div>\n    </section>\n\n    <div id=\"lowerSections\"></div>\n  </main>\n\n  <footer>\n    <div class=\"wrap footer-inner\">\n      <div>\n        <strong>Disclaimer:</strong> Illustrative educational estimator based on 2026 Portuguese IRS legislation (DL n.\u00ba 212/2026, DLR n.\u00ba 17/2026/M, OE 2026, IAS \u20ac537.13). Not formal tax advice; verify your final return on <em>Portal das Finan\u00e7as</em>.\n      </div>\n      <div>\n        <a href=\"https://github.com/bernardo7894/stt-calculator\" target=\"_blank\" rel=\"noopener\">Source Code (MIT License)</a>\n      </div>\n    </div>\n  </footer>";
+  if (!root) return;
+
+  const svgLogo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 185 52" height="42" role="img" aria-label="STT">
+    <g fill="#1D3E8F">
+      <ellipse cx="36" cy="9" rx="28" ry="1.9" opacity=".55"/>
+      <ellipse cx="34" cy="15" rx="30" ry="2.1" opacity=".75"/>
+      <ellipse cx="32" cy="21" rx="31" ry="2.2" opacity=".9"/>
+      <ellipse cx="30" cy="27" rx="31" ry="2.2"/>
+      <ellipse cx="28" cy="33" rx="30" ry="2.1" opacity=".9"/>
+      <ellipse cx="26" cy="39" rx="28" ry="1.9" opacity=".75"/>
+      <ellipse cx="24" cy="45" rx="25" ry="1.8" opacity=".55"/>
+      <circle cx="44" cy="26" r="13.5" stroke="#fff" stroke-width="2"/>
+      <path d="M31,26Q44,16 57,26Q44,36 31,26Z" fill="#fff"/>
+      <circle cx="44" cy="26" r="5.2" fill="#13295E"/>
+    </g>
+    <text x="72" y="36" font-family="system-ui,sans-serif" font-weight="900" font-size="33" fill="#CC2925">STT</text>
+    <text x="73" y="47" font-family="system-ui,sans-serif" font-weight="700" font-size="7.2" fill="#181D27">TELECOMUNICAÇÕES E AUDIOVISUAL</text>
+  </svg>`;
+
+  root.innerHTML = `
+  <div class="topbar"></div>
+  <header>
+    <div class="wrap header-inner">
+      <div class="brand">
+        ${svgLogo}
+        <div class="brand-text">
+          <h1 id="tBrandTitle">STT Union Dues Calculator</h1>
+          <p id="tBrandSub"></p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-lang="en" class="active">EN</button>
+          <button type="button" data-lang="pt">PT</button>
+          <button type="button" data-lang="zh">中文</button>
+        </div>
+        <nav aria-label="Primary">
+          <a href="#calculator" id="tNavCalc"></a>
+          <a href="#how-it-works" id="tNavWhy"></a>
+          <a href="#faq" id="tNavFaq"></a>
+          <a href="#join" id="tNavJoin" class="primary"></a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="privacy-bar">
+    <div class="wrap privacy-items">
+      <div class="privacy-badges">
+        <span>&#128274; <strong id="tPrivLocal"></strong></span>
+        <span>&#128683; <span id="tPrivZero"></span></span>
+        <span>&#128197; <span id="tPrivLaw"></span></span>
+      </div>
+      <a href="https://github.com/bernardo7894/stt-calculator" target="_blank" rel="noopener"><span id="tOpenSource"></span> &#8599;</a>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section id="calculator" class="calc-grid">
+      <!-- Left: Streamlined Core Inputs -->
+      <div class="card">
+        <h2 id="tInputTitle"></h2>
+        <p class="card-sub" id="tInputSub"></p>
+
+        <div class="field">
+          <div class="field-head">
+            <label for="salaryInput" id="tSalaryLabel"></label>
+            <div class="seg" role="group">
+              <button type="button" id="btnAnnual" class="active"></button>
+              <button type="button" id="btnMonthly14"></button>
+            </div>
+          </div>
+          <div class="input-prefix">
+            <span>€</span>
+            <input type="number" id="salaryInput" min="0" max="500000" step="500" value="40000" />
+          </div>
+          <div class="hint" id="salaryHint"></div>
+          <div class="presets">
+            <button type="button" data-annual="20000">€20k</button>
+            <button type="button" data-annual="30000">€30k</button>
+            <button type="button" data-annual="40000">€40k</button>
+            <button type="button" data-annual="55000">€55k</button>
+            <button type="button" data-annual="70000">€70k</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="regimeSelect" id="tRegimeLabel"></label>
+          <select id="regimeSelect">
+            <option value="standard" id="optRegStd" selected></option>
+            <option value="irs_jovem" id="optRegJovem"></option>
+            <option value="nhr" id="optRegNhr"></option>
+          </select>
+        </div>
+
+        <div id="jovemBox" class="subbox hidden">
+          <label for="jovemBand" id="tJovemLabel"></label>
+          <select id="jovemBand">
+            <option value="y1" id="optJY1"></option>
+            <option value="y2_4" id="optJY24" selected></option>
+            <option value="y5_7" id="optJY57"></option>
+            <option value="y8_10" id="optJY810"></option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field" style="margin-bottom:0;">
+            <label for="filingSelect" id="tFilingLabel"></label>
+            <select id="filingSelect">
+              <option value="single" id="optFilSingle" selected></option>
+              <option value="single_parent" id="optFilSP"></option>
+              <option value="joint" id="optFilJoint"></option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="depTotal" id="tDepLabel"></label>
+            <input type="number" id="depTotal" min="0" max="10" step="1" value="0" />
+          </div>
+        </div>
+
+        <div id="spouseBox" class="subbox hidden" style="margin-top:14px;">
+          <label for="spouseSalary" id="tSpouseSalaryLabel"></label>
+          <div class="input-prefix">
+            <span>€</span>
+            <input type="number" id="spouseSalary" min="0" max="500000" step="500" value="30000" />
+          </div>
+          <label class="check-inline">
+            <input type="checkbox" id="spouseUnion" />
+            <span id="tSpouseUnionLabel"></span>
+          </label>
+        </div>
+
+        <div id="depAgeBox" class="subbox hidden" style="margin-top:14px;">
+          <div class="field-row">
+            <div>
+              <label for="depLe3" id="tDepLe3Label"></label>
+              <input type="number" id="depLe3" min="0" max="10" step="1" value="0" />
+            </div>
+            <div>
+              <label for="dep2ndLe6" id="tDep2ndLe6Label"></label>
+              <input type="number" id="dep2ndLe6" min="0" max="10" step="1" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <details class="fold" style="margin-top:18px;">
+          <summary id="tAdvSummary"></summary>
+          <div class="fold-body">
+            <div class="field">
+              <label for="regionSelect" id="tRegionLabel"></label>
+              <select id="regionSelect">
+                <option value="continente" id="optRegCont" selected></option>
+                <option value="madeira" id="optRegMad"></option>
+                <option value="acores" id="optRegAco"></option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="extraCredits" id="tExtraCreditsLabel"></label>
+              <div class="input-prefix">
+                <span>€</span>
+                <input type="number" id="extraCredits" min="0" max="10000" step="50" value="0" />
+              </div>
+              <div class="hint" id="tExtraCreditsHint"></div>
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label for="feeRateInput" id="tFeeLabel"></label>
+              <input type="number" id="feeRateInput" min="0.1" max="5.0" step="0.1" value="1.0" />
+              <div class="hint" id="tFeeHint"></div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- Right: Calm, Focused Results -->
+      <div class="card">
+        <h2 id="tResultTitle"></h2>
+        <p class="card-sub" id="tResultSub"></p>
+
+        <div class="hero-answer">
+          <div class="hero-tile primary">
+            <div class="hero-label" id="tHeroMoLabel"></div>
+            <div class="hero-num" id="outNetMo12">€10.27</div>
+            <div class="hero-sub" id="outNetMo14"></div>
+          </div>
+          <div class="hero-tile rate">
+            <div class="hero-label" id="tHeroRateLabel"></div>
+            <div class="hero-num" id="outEffRate">0.31%</div>
+            <div class="hero-sub" id="outEffSub"></div>
+          </div>
+        </div>
+
+        <div class="mini-stats">
+          <div class="mini-stat savings">
+            <div class="k" id="tKpiSavingsLabel"></div>
+            <div class="v" id="outSavings">€276.80</div>
+            <div class="n" id="outSavingsPct"></div>
+          </div>
+          <div class="mini-stat">
+            <div class="k" id="tKpiNetYrLabel"></div>
+            <div class="v" id="outNetAnnual">€123.20</div>
+            <div class="n" id="outNominalNote"></div>
+          </div>
+        </div>
+
+        <div class="bar-wrap">
+          <div class="bar-header">
+            <span id="tBarTitle"></span>
+            <span id="barTotalLabel"></span>
+          </div>
+          <div class="bar-track" aria-hidden="true">
+            <div class="bar-net" id="barNet" style="width:31%;"></div>
+            <div class="bar-tax" id="barTax" style="width:69%;"></div>
+          </div>
+          <div class="bar-legend">
+            <span><span class="dot" style="background:var(--red);"></span><span id="tLegNet"></span> <strong id="legNet"></strong></span>
+            <span><span class="dot" style="background:var(--green);"></span><span id="tLegTax"></span> <strong id="legTax"></strong></span>
+          </div>
+        </div>
+
+        <div id="insightBox" class="insight"></div>
+
+        <details class="fold">
+          <summary id="tChartSummary"></summary>
+          <div class="fold-body">
+            <svg id="rateChart" viewBox="0 0 540 165" role="img"></svg>
+          </div>
+        </details>
+
+        <details class="fold">
+          <summary id="tMathSummary"></summary>
+          <div class="fold-body">
+            <table class="math-table">
+              <thead>
+                <tr>
+                  <th id="tMathColItem"></th>
+                  <th id="tMathColNo"></th>
+                  <th id="tMathColYes"></th>
+                </tr>
+              </thead>
+              <tbody id="mathBody"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <div id="lowerSections"></div>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div id="tDisclaimer"></div>
+      <div>
+        <a href="https://github.com/bernardo7894/stt-calculator" target="_blank" rel="noopener" id="tSourceLink"></a>
+      </div>
+    </div>
+  </footer>`;
 })();
